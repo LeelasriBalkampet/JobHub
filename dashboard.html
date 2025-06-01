@@ -1,7 +1,3 @@
-
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,7 +7,6 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-container">
             <div class="nav-brand">
@@ -28,7 +23,6 @@
         </div>
     </nav>
 
-    <!-- Dashboard Content -->
     <section class="container" style="padding-top: 2rem; padding-bottom: 4rem;">
         <div id="dashboard-content">
             <div class="text-center" style="padding: 3rem;">
@@ -39,7 +33,6 @@
         </div>
     </section>
 
-    <!-- Login Modal (reuse from index.html) -->
     <div id="login-modal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
@@ -103,7 +96,7 @@
             updateUI();
 
             if (!currentUser) {
-                return; // Show login message
+                return; 
             }
 
             loadDashboard();
@@ -295,7 +288,7 @@
             saveData();
 
             showNotification(`Application ${status} successfully!`);
-            loadDashboard(); // Reload dashboard to update UI
+            loadDashboard();
         }
     </script>
 </body>
