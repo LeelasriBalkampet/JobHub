@@ -1,5 +1,3 @@
-
-// Global Variables
 let currentUser = null;
 let jobs = [];
 let applications = [];
@@ -7,7 +5,6 @@ let users = [];
 let isLogin = true;
 let selectedUserType = 'jobseeker';
 
-// Initialize the application
 document.addEventListener('DOMContentLoaded', function() {
     loadData();
     initializeEventListeners();
@@ -15,7 +12,6 @@ document.addEventListener('DOMContentLoaded', function() {
     loadSampleJobs();
 });
 
-// Load data from localStorage
 function loadData() {
     const storedUsers = localStorage.getItem('jobportal_users');
     const storedJobs = localStorage.getItem('jobportal_jobs');
@@ -28,7 +24,6 @@ function loadData() {
     currentUser = storedCurrentUser ? JSON.parse(storedCurrentUser) : null;
 }
 
-// Save data to localStorage
 function saveData() {
     localStorage.setItem('jobportal_users', JSON.stringify(users));
     localStorage.setItem('jobportal_jobs', JSON.stringify(jobs));
@@ -36,7 +31,6 @@ function saveData() {
     localStorage.setItem('jobportal_current_user', JSON.stringify(currentUser));
 }
 
-// Initialize event listeners
 function initializeEventListeners() {
     const loginBtn = document.getElementById('login-btn');
     const logoutBtn = document.getElementById('logout-btn');
@@ -55,7 +49,6 @@ function initializeEventListeners() {
     if (jobseekerBtn) jobseekerBtn.addEventListener('click', () => selectUserType('jobseeker'));
     if (employerBtn) employerBtn.addEventListener('click', () => selectUserType('employer'));
     
-    // Close modal when clicking outside
     window.addEventListener('click', function(event) {
         if (event.target === modal) {
             closeLoginModal();
@@ -63,7 +56,6 @@ function initializeEventListeners() {
     });
 }
 
-// Update UI based on user state
 function updateUI() {
     const loginBtn = document.getElementById('login-btn');
     const logoutBtn = document.getElementById('logout-btn');
@@ -89,7 +81,6 @@ function updateUI() {
     }
 }
 
-// Load sample jobs if none exist
 function loadSampleJobs() {
     if (jobs.length === 0) {
         const sampleJobs = [
@@ -165,7 +156,6 @@ function loadSampleJobs() {
     }
 }
 
-// Authentication functions
 function openLoginModal() {
     document.getElementById('login-modal').style.display = 'block';
     updateAuthModal();
@@ -237,7 +227,6 @@ function handleAuth(e) {
     const password = document.getElementById('password').value;
     
     if (isLogin) {
-        // Login logic
         const user = users.find(u => u.email === email);
         if (user) {
             currentUser = user;
@@ -249,7 +238,6 @@ function handleAuth(e) {
             showNotification('User not found', 'error');
         }
     } else {
-        // Register logic
         const name = document.getElementById('name').value;
         const phone = document.getElementById('phone').value;
         const company = document.getElementById('company').value;
@@ -288,7 +276,6 @@ function logout() {
     window.location.href = 'index.html';
 }
 
-// Utility functions
 function showNotification(message, type = 'success') {
     const notification = document.createElement('div');
     notification.className = `notification ${type}`;
@@ -313,7 +300,6 @@ function searchJobs() {
     window.location.href = 'jobs.html';
 }
 
-// Export functions for use in other pages
 window.jobPortal = {
     currentUser,
     jobs,
