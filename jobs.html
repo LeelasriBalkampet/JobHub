@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Listings - JobHub</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <h1>💼 JobHub</h1>
+            </div>
+            <div class="nav-menu">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="jobs.html" class="nav-link active">Jobs</a>
+                <a href="dashboard.html" class="nav-link" id="dashboard-link" style="display: none;">Dashboard</a>
+                <a href="post-job.html" class="nav-link" id="post-job-link" style="display: none;">Post Job</a>
+                <button class="btn btn-primary" id="login-btn">Login / Register</button>
+                <button class="btn btn-outline" id="logout-btn" style="display: none;">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1>Find Your Dream Job</h1>
+            <p>Browse through thousands of job opportunities</p>
+        </div>
+    </section>
+
+    <!-- Filters -->
+    <section class="container" style="padding-top: 2rem;">
+        <div class="filters">
+            <div class="filter-grid">
+                <div class="filter-group">
+                    <label for="search-input">🔍 Search</label>
+                    <input type="text" id="search-input" placeholder="Job title, company, keywords...">
+                </div>
+                <div class="filter-group">
+                    <label for="location-filter">📍 Location</label>
+                    <input type="text" id="location-filter" placeholder="City, state, or remote">
+                </div>
+                <div class="filter-group">
+                    <label for="type-filter">💼 Job Type</label>
+                    <select id="type-filter">
+                        <option value="">All Types</option>
+                        <option value="full-time">Full Time</option>
+                        <option value="part-time">Part Time</option>
+                        <option value="contract">Contract</option>
+                        <option value="remote">Remote</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="category-filter">🏷️ Category</label>
+                    <select id="category-filter">
+                        <option value="">All Categories</option>
+                        <option value="Technology">Technology</option>
+                        <option value="Marketing">Marketing</option>
+                        <option value="Sales">Sales</option>
+                        <option value="Design">Design</option>
+                        <option value="Finance">Finance</option>
+                        <option value="Healthcare">Healthcare</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Count -->
+        <div class="mb-4">
+            <p id="results-count" style="color: #64748b; font-weight: 500;"></p>
+        </div>
+
+        <!-- Job Listings -->
+        <div id="job-listings"></div>
+
+        <!-- No Results -->
+        <div id="no-results" class="text-center" style="display: none; padding: 3rem;">
+            <h3 style="color: #64748b; margin-bottom: 1rem;">No jobs found</h3>
+            <p style="color: #64748b; margin-bottom: 2rem;">Try adjusting your search criteria</p>
+            <button class="btn btn-outline" onclick="clearFilters()">Clear All Filters</button>
+        </div>
+    </section>
+
+    <!-- Job Application Modal -->
+    <div id="application-modal" class="modal application-modal">
+        <div class="modal-content">
+            <span class="close" id="close-application">&times;</span>
+            <h2>Apply for Position</h2>
+            
+            <div id="job-details" class="mb-4"></div>
+            
+            <form id="application-form">
+                <div class="form-group">
+                    <label for="applicant-name">Full Name</label>
+                    <input type="text" id="applicant-name" readonly style="background: #f8fafc;">
+                </div>
+                
+                <div class="form-group">
+                    <label for="applicant-email">Email</label>
+                    <input type="email" id="applicant-email" readonly style="background: #f8fafc;">
+                </div>
+                
+                <div class="form-group">
+                    <label for="application-resume">Resume</label>
+                    <input type="file" id="application-resume" accept=".pdf,.doc,.docx">
+                    <p style="font-size: 0.8rem; color: #64748b; margin-top: 0.5rem;">
+                        Upload a new resume or use the one from your profile
+                    </p>
+                </div>
+                
+                <div style="display: flex; gap: 1rem;">
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">Submit Application</button>
+                    <button type="button" class="btn btn-outline" onclick="closeApplicationModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        let filteredJobs = [];
+        let selectedJob = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadJobsPage();
+            initializeJobFilters();
+            
+            // Load search term from homepage
+            const searchTerm = localStorage.getItem('searchTerm');
+            if (searchTerm) {
+                document.getElementById('search-input').value = searchTerm;
+                localStorage.removeItem('searchTerm');
+            }
+            
+            filterJobs();
+        });
+
+        function loadJobsPage() {
+            loadData();
+            updateUI();
+            
+            // Initialize application modal
+            document.getElementById('close-application').addEventListener('click', closeApplicationModal);
+            document.getElementById('application-form').addEventListener('submit', handleJobApplication);
+        }
+
+        function initializeJobFilters() {
+            const searchInput = document.getElementById('search-input');
+            const locationFilter = document.getElementById('location-filter');
+            const typeFilter = document.getElementById('type-filter');
+            const categoryFilter = document.getElementById('category-filter');
+
+            [searchInput, locationFilter, typeFilter, categoryFilter].forEach(element => {
+                element.addEventListener('input', filterJobs);
+                element.addEventListener('change', filterJobs);
+            });
+        }
+
+        function filterJobs() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            const locationTerm = document.getElementById('location-filter').value.toLowerCase();
+            const typeFilter = document.getElementById('type-filter').value;
+            const categoryFilter = document.getElementById('category-filter').value;
+
+            filteredJobs = jobs.filter(job => {
+                const matchesSearch = job.title.toLowerCase().includes(searchTerm) ||
+                                   job.company.toLowerCase().includes(searchTerm) ||
+                                   job.description.toLowerCase().includes(searchTerm);
+                const matchesLocation = !locationTerm || job.location.toLowerCase().includes(locationTerm);
+                const matchesType = !typeFilter || job.type === typeFilter;
+                const matchesCategory = !categoryFilter || job.category === categoryFilter;
+                
+                return matchesSearch && matchesLocation && matchesType && matchesCategory;
+            });
+
+            displayJobs();
+        }
+
+        function displayJobs() {
+            const jobListings = document.getElementById('job-listings');
+            const resultsCount = document.getElementById('results-count');
+            const noResults = document.getElementById('no-results');
+
+            resultsCount.textContent = `Showing ${filteredJobs.length} job${filteredJobs.length !== 1 ? 's' : ''}`;
+
+            if (filteredJobs.length === 0) {
+                jobListings.innerHTML = '';
+                noResults.style.display = 'block';
+                return;
+            }
+
+            noResults.style.display = 'none';
+
+            jobListings.innerHTML = filteredJobs.map(job => `
+                <div class="job-card">
+                    <div class="job-header">
+                        <div>
+                            <div class="job-title">${job.title}</div>
+                            <div class="job-company">🏢 ${job.company}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="job-meta">
+                        <span>📍 ${job.location}</span>
+                        <span>💰 ${job.salary}</span>
+                        <span>📅 ${new Date(job.postedAt).toLocaleDateString()}</span>
+                    </div>
+                    
+                    <div class="job-tags">
+                        <span class="job-tag">${job.type}</span>
+                        <span class="job-tag">${job.category}</span>
+                    </div>
+                    
+                    <div class="job-description">
+                        ${job.description}
+                    </div>
+                    
+                    <div style="margin-top: 1rem;">
+                        <strong>Requirements:</strong>
+                        <p style="color: #64748b; font-size: 0.9rem; margin-top: 0.5rem;">${job.requirements}</p>
+                    </div>
+                    
+                    <button class="btn btn-primary mt-4" onclick="openApplicationModal('${job.id}')" style="width: 100%;">
+                        Apply Now
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function openApplicationModal(jobId) {
+            if (!currentUser) {
+                showNotification('Please login to apply for jobs', 'error');
+                return;
+            }
+
+            if (currentUser.type === 'employer') {
+                showNotification('Employers cannot apply for jobs', 'error');
+                return;
+            }
+
+            selectedJob = jobs.find(j => j.id === jobId);
+            if (!selectedJob) return;
+
+            document.getElementById('job-details').innerHTML = `
+                <div style="background: #f8fafc; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem;">
+                    <h3 style="margin-bottom: 0.5rem;">${selectedJob.title}</h3>
+                    <p style="color: #64748b;">${selectedJob.company} • ${selectedJob.location}</p>
+                    <p style="color: #64748b; font-size: 0.9rem; margin-top: 0.5rem;">${selectedJob.salary}</p>
+                </div>
+            `;
+
+            document.getElementById('applicant-name').value = currentUser.name || '';
+            document.getElementById('applicant-email').value = currentUser.email || '';
+
+            document.getElementById('application-modal').style.display = 'block';
+        }
+
+        function closeApplicationModal() {
+            document.getElementById('application-modal').style.display = 'none';
+            selectedJob = null;
+        }
+
+        function handleJobApplication(e) {
+            e.preventDefault();
+
+            if (!selectedJob || !currentUser) return;
+
+            const resumeFile = document.getElementById('application-resume').files[0];
+            const resumeUrl = resumeFile ? URL.createObjectURL(resumeFile) : currentUser.resumeUrl;
+
+            if (!resumeUrl) {
+                showNotification('Please upload a resume', 'error');
+                return;
+            }
+
+            const application = {
+                id: Date.now().toString(),
+                jobId: selectedJob.id,
+                userId: currentUser.id,
+                resumeUrl: resumeUrl,
+                coverLetter: '', // Empty since we removed cover letter
+                appliedAt: new Date().toISOString(),
+                status: 'pending'
+            };
+
+            applications.push(application);
+            saveData();
+
+            showNotification(`Application submitted successfully for ${selectedJob.title}!`);
+            closeApplicationModal();
+        }
+
+        function clearFilters() {
+            document.getElementById('search-input').value = '';
+            document.getElementById('location-filter').value = '';
+            document.getElementById('type-filter').value = '';
+            document.getElementById('category-filter').value = '';
+            filterJobs();
+        }
+
+        // Close modal when clicking outside
+        window.addEventListener('click', function(event) {
+            const modal = document.getElementById('application-modal');
+            if (event.target === modal) {
+                closeApplicationModal();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,302 @@
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - JobHub</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <h1>💼 JobHub</h1>
+            </div>
+            <div class="nav-menu">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="jobs.html" class="nav-link">Jobs</a>
+                <a href="dashboard.html" class="nav-link active">Dashboard</a>
+                <a href="post-job.html" class="nav-link" id="post-job-link" style="display: none;">Post Job</a>
+                <button class="btn btn-primary" id="login-btn">Login / Register</button>
+                <button class="btn btn-outline" id="logout-btn" style="display: none;">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Dashboard Content -->
+    <section class="container" style="padding-top: 2rem; padding-bottom: 4rem;">
+        <div id="dashboard-content">
+            <div class="text-center" style="padding: 3rem;">
+                <h2 style="color: #1e293b; margin-bottom: 1rem;">Please Login</h2>
+                <p style="color: #64748b; margin-bottom: 2rem;">You need to be logged in to access your dashboard.</p>
+                <a href="index.html" class="btn btn-primary">Go to Homepage</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Login Modal (reuse from index.html) -->
+    <div id="login-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modal-title">Login</h2>
+            
+            <div class="user-type-selector" id="user-type-selector" style="display: none;">
+                <button class="btn btn-outline" id="jobseeker-btn">Job Seeker</button>
+                <button class="btn btn-outline" id="employer-btn">Employer</button>
+            </div>
+            
+            <form id="auth-form">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" required>
+                </div>
+                
+                <div id="register-fields" style="display: none;">
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone">Phone</label>
+                        <input type="tel" id="phone">
+                    </div>
+                    
+                    <div class="form-group" id="company-field" style="display: none;">
+                        <label for="company">Company Name</label>
+                        <input type="text" id="company">
+                    </div>
+                    
+                    <div class="form-group" id="resume-field" style="display: none;">
+                        <label for="resume">Resume (PDF/DOC)</label>
+                        <input type="file" id="resume" accept=".pdf,.doc,.docx">
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-full" id="auth-submit">Login</button>
+                
+                <p class="text-center">
+                    <a href="#" id="toggle-auth">Need an account? Register</a>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDashboardPage();
+        });
+
+        function loadDashboardPage() {
+            loadData();
+            updateUI();
+
+            if (!currentUser) {
+                return; // Show login message
+            }
+
+            loadDashboard();
+        }
+
+        function loadDashboard() {
+            const dashboardContent = document.getElementById('dashboard-content');
+            
+            if (currentUser.type === 'jobseeker') {
+                loadJobSeekerDashboard();
+            } else {
+                loadEmployerDashboard();
+            }
+        }
+
+        function loadJobSeekerDashboard() {
+            const userApplications = applications.filter(app => app.userId === currentUser.id);
+            
+            document.getElementById('dashboard-content').innerHTML = `
+                <div style="max-width: 1000px; margin: 0 auto;">
+                    <div class="dashboard-header">
+                        <h1>Welcome back, ${currentUser.name}! 👋</h1>
+                        <p>Track your job applications and discover new opportunities</p>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">📄</div>
+                            <div class="stat-number">${userApplications.length}</div>
+                            <div class="stat-label">Applications Submitted</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">⏳</div>
+                            <div class="stat-number">${userApplications.filter(app => app.status === 'pending').length}</div>
+                            <div class="stat-label">Pending Reviews</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">✅</div>
+                            <div class="stat-number">${userApplications.filter(app => app.status === 'accepted').length}</div>
+                            <div class="stat-label">Accepted</div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-section">
+                        <h2>My Applications</h2>
+                        <div id="user-applications">
+                            ${userApplications.length === 0 ? 
+                                '<p class="no-data">No applications yet. <a href="jobs.html">Start applying to jobs!</a></p>' :
+                                userApplications.map(application => {
+                                    const job = jobs.find(j => j.id === application.jobId);
+                                    if (!job) return '';
+                                    
+                                    return `
+                                        <div class="application-card">
+                                            <div class="application-header">
+                                                <div>
+                                                    <h4>${job.title}</h4>
+                                                    <p class="company-name">${job.company}</p>
+                                                </div>
+                                                <span class="status-badge status-${application.status}">${application.status}</span>
+                                            </div>
+                                            <div class="application-meta">
+                                                <span>📍 ${job.location}</span>
+                                                <span>📅 Applied: ${new Date(application.appliedAt).toLocaleDateString()}</span>
+                                            </div>
+                                        </div>
+                                    `;
+                                }).join('')
+                            }
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function loadEmployerDashboard() {
+            const userJobs = jobs.filter(job => job.employerId === currentUser.id);
+            const jobApplications = applications.filter(app => 
+                userJobs.some(job => job.id === app.jobId)
+            );
+            
+            document.getElementById('dashboard-content').innerHTML = `
+                <div style="max-width: 1200px; margin: 0 auto;">
+                    <div class="dashboard-header">
+                        <h1>Welcome back, ${currentUser.name}! 🏢</h1>
+                        <p>Manage your job postings and review applications</p>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">💼</div>
+                            <div class="stat-number">${userJobs.length}</div>
+                            <div class="stat-label">Active Job Postings</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">👥</div>
+                            <div class="stat-number">${jobApplications.length}</div>
+                            <div class="stat-label">Total Applications</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">⏳</div>
+                            <div class="stat-number">${jobApplications.filter(app => app.status === 'pending').length}</div>
+                            <div class="stat-label">Pending Reviews</div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-section">
+                        <h2>Recent Applications</h2>
+                        <div id="job-applications">
+                            ${jobApplications.length === 0 ? 
+                                '<p class="no-data">No applications received yet.</p>' :
+                                jobApplications.map(application => {
+                                    const job = jobs.find(j => j.id === application.jobId);
+                                    const applicant = users.find(u => u.id === application.userId);
+                                    if (!job || !applicant) return '';
+                                    
+                                    return `
+                                        <div class="application-card">
+                                            <div class="application-header">
+                                                <div>
+                                                    <h4>${job.title}</h4>
+                                                    <p class="applicant-name">👤 ${applicant.name}</p>
+                                                    <p class="applicant-email">📧 ${applicant.email}</p>
+                                                </div>
+                                                <div class="application-actions">
+                                                    <span class="status-badge status-${application.status}">${application.status}</span>
+                                                    ${application.status === 'pending' ? `
+                                                        <div class="action-buttons">
+                                                            <button class="btn btn-success btn-sm" onclick="updateApplicationStatus('${application.id}', 'accepted')">
+                                                                ✅ Accept
+                                                            </button>
+                                                            <button class="btn btn-danger btn-sm" onclick="updateApplicationStatus('${application.id}', 'rejected')">
+                                                                ❌ Reject
+                                                            </button>
+                                                        </div>
+                                                    ` : ''}
+                                                </div>
+                                            </div>
+                                            <div class="application-meta">
+                                                <span>📅 Applied: ${new Date(application.appliedAt).toLocaleDateString()}</span>
+                                                ${application.resumeUrl ? `<a href="${application.resumeUrl}" target="_blank" class="resume-link">📄 View Resume</a>` : ''}
+                                            </div>
+                                        </div>
+                                    `;
+                                }).join('')
+                            }
+                        </div>
+                    </div>
+
+                    <div class="dashboard-section">
+                        <h2>My Job Postings</h2>
+                        <div id="employer-jobs">
+                            ${userJobs.length === 0 ? 
+                                '<p class="no-data">No job postings yet. <a href="post-job.html">Post your first job!</a></p>' :
+                                userJobs.map(job => {
+                                    const jobApps = applications.filter(app => app.jobId === job.id);
+                                    return `
+                                        <div class="job-posting-card">
+                                            <div class="job-header">
+                                                <div>
+                                                    <h4>${job.title}</h4>
+                                                    <p class="job-details">📍 ${job.location} • 💰 ${job.salary}</p>
+                                                </div>
+                                                <div class="job-stats">
+                                                    <span class="application-count">${jobApps.length} applications</span>
+                                                </div>
+                                            </div>
+                                            <p class="job-description">${job.description.substring(0, 150)}...</p>
+                                            <div class="job-meta">
+                                                <span>📅 Posted: ${new Date(job.postedAt).toLocaleDateString()}</span>
+                                                <span class="job-tag">${job.type}</span>
+                                                <span class="job-tag">${job.category}</span>
+                                            </div>
+                                        </div>
+                                    `;
+                                }).join('')
+                            }
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function updateApplicationStatus(applicationId, status) {
+            const application = applications.find(app => app.id === applicationId);
+            if (!application) return;
+
+            application.status = status;
+            saveData();
+
+            showNotification(`Application ${status} successfully!`);
+            loadDashboard(); // Reload dashboard to update UI
+        }
+    </script>
+</body>
+</html>

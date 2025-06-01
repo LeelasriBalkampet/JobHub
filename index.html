@@ -1,0 +1,128 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JobHub - Find Your Dream Job</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💼</text></svg>" />
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <h1>💼 JobHub</h1>
+            </div>
+            <div class="nav-menu">
+                <a href="index.html" class="nav-link active">Home</a>
+                <a href="jobs.html" class="nav-link">Jobs</a>
+                <a href="#" class="nav-link" id="dashboard-link" style="display: none;">Dashboard</a>
+                <a href="post-job.html" class="nav-link" id="post-job-link" style="display: none;">Post Job</a>
+                <button class="btn btn-primary" id="login-btn">Login / Register</button>
+                <button class="btn btn-outline" id="logout-btn" style="display: none;">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Find Your <span class="text-primary">Dream Job</span></h1>
+            <p>Connect with top companies and discover opportunities that match your skills and ambitions.</p>
+            
+            <div class="search-container">
+                <div class="search-box">
+                    <input type="text" placeholder="Job title, keywords, or company..." id="hero-search">
+                    <button class="btn btn-primary" onclick="searchJobs()">Search Jobs</button>
+                </div>
+            </div>
+            
+            <div class="hero-buttons">
+                <a href="jobs.html" class="btn btn-outline">Browse All Jobs</a>
+                <button class="btn btn-secondary" id="hero-post-job" style="display: none;">Post a Job</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="container">
+            <h2>Why Choose JobHub?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔍</div>
+                    <h3>Smart Search</h3>
+                    <p>Advanced filters and search algorithms to find the perfect job matches.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🏢</div>
+                    <h3>Top Companies</h3>
+                    <p>Connect with leading companies across various industries.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⭐</div>
+                    <h3>Easy Application</h3>
+                    <p>Apply to jobs with just a few clicks. Upload your resume once.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Login Modal -->
+    <div id="login-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modal-title">Login</h2>
+            
+            <div class="user-type-selector" id="user-type-selector" style="display: none;">
+                <button class="btn btn-outline" id="jobseeker-btn">Job Seeker</button>
+                <button class="btn btn-outline" id="employer-btn">Employer</button>
+            </div>
+            
+            <form id="auth-form">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" required>
+                </div>
+                
+                <div id="register-fields" style="display: none;">
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone">Phone</label>
+                        <input type="tel" id="phone">
+                    </div>
+                    
+                    <div class="form-group" id="company-field" style="display: none;">
+                        <label for="company">Company Name</label>
+                        <input type="text" id="company">
+                    </div>
+                    
+                    <div class="form-group" id="resume-field" style="display: none;">
+                        <label for="resume">Resume (PDF/DOC)</label>
+                        <input type="file" id="resume" accept=".pdf,.doc,.docx">
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-full" id="auth-submit">Login</button>
+                
+                <p class="text-center">
+                    <a href="#" id="toggle-auth">Need an account? Register</a>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

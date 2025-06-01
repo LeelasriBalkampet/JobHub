@@ -1,0 +1,168 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post a Job - JobHub</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <h1>💼 JobHub</h1>
+            </div>
+            <div class="nav-menu">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="jobs.html" class="nav-link">Jobs</a>
+                <a href="dashboard.html" class="nav-link">Dashboard</a>
+                <a href="post-job.html" class="nav-link active">Post Job</a>
+                <button class="btn btn-primary" id="login-btn">Login / Register</button>
+                <button class="btn btn-outline" id="logout-btn" style="display: none;">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1>Post a New Job</h1>
+            <p>Find the perfect candidate for your open position</p>
+        </div>
+    </section>
+
+    <!-- Job Form -->
+    <section class="container" style="padding-top: 2rem; padding-bottom: 4rem;">
+        <div id="post-job-content">
+            <div style="background: white; border-radius: 1rem; padding: 2rem; box-shadow: 0 4px 20px rgba(0,0,0,0.1); max-width: 800px; margin: 0 auto;">
+                <h2 style="margin-bottom: 2rem; color: #1e293b;">💼 Job Details</h2>
+                
+                <form id="job-form">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+                        <div class="form-group">
+                            <label for="job-title">Job Title *</label>
+                            <input type="text" id="job-title" placeholder="e.g. Senior Software Engineer" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="job-location">Location *</label>
+                            <input type="text" id="job-location" placeholder="e.g. San Francisco, CA" required>
+                        </div>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+                        <div class="form-group">
+                            <label for="job-type">Job Type *</label>
+                            <select id="job-type" required>
+                                <option value="">Select job type</option>
+                                <option value="full-time">Full Time</option>
+                                <option value="part-time">Part Time</option>
+                                <option value="contract">Contract</option>
+                                <option value="remote">Remote</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="job-salary">Salary Range *</label>
+                            <input type="text" id="job-salary" placeholder="e.g. $80,000 - $120,000" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="job-category">Category *</label>
+                        <select id="job-category" required>
+                            <option value="">Select category</option>
+                            <option value="Technology">Technology</option>
+                            <option value="Marketing">Marketing</option>
+                            <option value="Sales">Sales</option>
+                            <option value="Design">Design</option>
+                            <option value="Finance">Finance</option>
+                            <option value="Healthcare">Healthcare</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="job-description">Job Description *</label>
+                        <textarea id="job-description" placeholder="Describe the role, responsibilities, and what the candidate can expect..." rows="6" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="job-requirements">Requirements *</label>
+                        <textarea id="job-requirements" placeholder="List the required skills, experience, and qualifications..." rows="4" required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-full">
+                        ➕ Post Job
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            loadPostJobPage();
+        });
+
+        function loadPostJobPage() {
+            loadData();
+            updateUI();
+
+            if (!currentUser || currentUser.type !== 'employer') {
+                document.getElementById('post-job-content').innerHTML = `
+                    <div class="text-center" style="padding: 3rem;">
+                        <h2 style="color: #1e293b; margin-bottom: 1rem;">Employer Access Required</h2>
+                        <p style="color: #64748b; margin-bottom: 2rem;">Only registered employers can post job listings.</p>
+                        <a href="index.html" class="btn btn-primary">Go to Homepage</a>
+                    </div>
+                `;
+                return;
+            }
+
+            document.getElementById('job-form').addEventListener('submit', handleJobPost);
+        }
+
+        function handleJobPost(e) {
+            e.preventDefault();
+
+            const title = document.getElementById('job-title').value;
+            const location = document.getElementById('job-location').value;
+            const type = document.getElementById('job-type').value;
+            const salary = document.getElementById('job-salary').value;
+            const category = document.getElementById('job-category').value;
+            const description = document.getElementById('job-description').value;
+            const requirements = document.getElementById('job-requirements').value;
+
+            const newJob = {
+                id: Date.now().toString(),
+                title: title,
+                company: currentUser.company || currentUser.name,
+                location: location,
+                type: type,
+                salary: salary,
+                description: description,
+                requirements: requirements,
+                employerId: currentUser.id,
+                postedAt: new Date().toISOString(),
+                category: category
+            };
+
+            jobs.push(newJob);
+            saveData();
+
+            showNotification(`Job "${title}" posted successfully!`);
+
+            // Reset form
+            document.getElementById('job-form').reset();
+
+            // Redirect to jobs page after a short delay
+            setTimeout(() => {
+                window.location.href = 'jobs.html';
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
