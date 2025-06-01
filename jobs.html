@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- Navigation -->
+
     <nav class="navbar">
         <div class="nav-container">
             <div class="nav-brand">
@@ -24,7 +24,6 @@
         </div>
     </nav>
 
-    <!-- Page Header -->
     <section class="page-header">
         <div class="container">
             <h1>Find Your Dream Job</h1>
@@ -32,7 +31,6 @@
         </div>
     </section>
 
-    <!-- Filters -->
     <section class="container" style="padding-top: 2rem;">
         <div class="filters">
             <div class="filter-grid">
@@ -69,15 +67,12 @@
             </div>
         </div>
 
-        <!-- Results Count -->
         <div class="mb-4">
             <p id="results-count" style="color: #64748b; font-weight: 500;"></p>
         </div>
 
-        <!-- Job Listings -->
         <div id="job-listings"></div>
 
-        <!-- No Results -->
         <div id="no-results" class="text-center" style="display: none; padding: 3rem;">
             <h3 style="color: #64748b; margin-bottom: 1rem;">No jobs found</h3>
             <p style="color: #64748b; margin-bottom: 2rem;">Try adjusting your search criteria</p>
@@ -85,7 +80,6 @@
         </div>
     </section>
 
-    <!-- Job Application Modal -->
     <div id="application-modal" class="modal application-modal">
         <div class="modal-content">
             <span class="close" id="close-application">&times;</span>
@@ -282,7 +276,7 @@
                 jobId: selectedJob.id,
                 userId: currentUser.id,
                 resumeUrl: resumeUrl,
-                coverLetter: '', // Empty since we removed cover letter
+                coverLetter: '',
                 appliedAt: new Date().toISOString(),
                 status: 'pending'
             };
@@ -302,7 +296,6 @@
             filterJobs();
         }
 
-        // Close modal when clicking outside
         window.addEventListener('click', function(event) {
             const modal = document.getElementById('application-modal');
             if (event.target === modal) {
