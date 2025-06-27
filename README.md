@@ -1,5 +1,5 @@
-**#JobHunt**
-JobHunt is a web application designed to help users find and post job opportunities efficiently. It features a user-friendly interface with pages for browsing jobs, posting new job listings, and managing dashboards.
+**#JobHub**
+JobHub is a web application designed to help users find and post job opportunities efficiently. It features a user-friendly interface with pages for browsing jobs, posting new job listings, and managing dashboards.
 
 **#Features**
 -> Browse available job listings
@@ -26,10 +26,10 @@ JobHunt is a web application designed to help users find and post job opportunit
 
 **#How to Run**
 1. Clone the repository:
-**git clone https://github.com/LeelasriBalkampet/JobHunt.git**
+**git clone https://github.com/LeelasriBalkampet/JobHub.git**
 2. Open index.html in your favorite browser to start using the application.
 
-****View it live**: https://leelasribalkampet.github.io/JobHunt/**
+****View it live**: https://leelasribalkampet.github.io/JobHub/**
 
 **#Contribution**
 Contributions are welcome! If you want to improve this project:
