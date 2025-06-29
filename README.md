@@ -2,27 +2,27 @@
 JobHub is a web application designed to help users find and post job opportunities efficiently. It features a user-friendly interface with pages for browsing jobs, posting new job listings, and managing dashboards.
 
 **#Features**
--> Browse available job listings
--> Post new job opportunities (via 'post-job.html')
--> User dashboard to track activities
--> Responsive design with clean UI
--> Built using HTML, CSS, and JavaScript
+- Browse available job listings
+- Post new job opportunities (via 'post-job.html')
+- User dashboard to track activities
+- Responsive design with clean UI
+- Built using HTML, CSS, and JavaScript
 
 **#Technologies Used**
--> HTML5
--> CSS3
--> JavaScript
--> Git & GitHub for version control
+- HTML5
+- CSS3
+- JavaScript
+- Git & GitHub for version control
 
 **#Project Structure**
 
 **JobHunt**
-    |-- /index.html         # Home page  
-    |-- /dashboard.html     # User dashboard  
-    |-- /jobs.html          # Job listings page  
-    |-- /post-job.html      # Job posting page  
-    |-- /styles.css         # Stylesheet  
-    |-- /script.js          # JavaScript functionality  
+- /index.html         # Home page
+- /dashboard.html     # User dashboard
+- /jobs.html          # Job listings page
+- /post-job.html      # Job posting page
+- /styles.css         # Stylesheet
+- /script.js          # JavaScript functionality  
 
 **#How to Run**
 1. Clone the repository:
