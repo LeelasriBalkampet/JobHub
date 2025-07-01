@@ -7,7 +7,10 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+<<<<<<< HEAD
 
+=======
+>>>>>>> 170308c (Dockerized JobHub project and added deployment support)
     <nav class="navbar">
         <div class="nav-container">
             <div class="nav-brand">
@@ -23,14 +26,20 @@
             </div>
         </div>
     </nav>
+<<<<<<< HEAD
 
+=======
+>>>>>>> 170308c (Dockerized JobHub project and added deployment support)
     <section class="page-header">
         <div class="container">
             <h1>Find Your Dream Job</h1>
             <p>Browse through thousands of job opportunities</p>
         </div>
     </section>
+<<<<<<< HEAD
 
+=======
+>>>>>>> 170308c (Dockerized JobHub project and added deployment support)
     <section class="container" style="padding-top: 2rem;">
         <div class="filters">
             <div class="filter-grid">
@@ -71,8 +80,13 @@
             <p id="results-count" style="color: #64748b; font-weight: 500;"></p>
         </div>
 
+<<<<<<< HEAD
         <div id="job-listings"></div>
 
+=======
+      
+        <div id="job-listings"></div>
+>>>>>>> 170308c (Dockerized JobHub project and added deployment support)
         <div id="no-results" class="text-center" style="display: none; padding: 3rem;">
             <h3 style="color: #64748b; margin-bottom: 1rem;">No jobs found</h3>
             <p style="color: #64748b; margin-bottom: 2rem;">Try adjusting your search criteria</p>
@@ -122,8 +136,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             loadJobsPage();
             initializeJobFilters();
-            
-            // Load search term from homepage
+   
             const searchTerm = localStorage.getItem('searchTerm');
             if (searchTerm) {
                 document.getElementById('search-input').value = searchTerm;
@@ -136,8 +149,7 @@
         function loadJobsPage() {
             loadData();
             updateUI();
-            
-            // Initialize application modal
+          
             document.getElementById('close-application').addEventListener('click', closeApplicationModal);
             document.getElementById('application-form').addEventListener('submit', handleJobApplication);
         }
